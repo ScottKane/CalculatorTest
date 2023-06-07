@@ -1,0 +1,30 @@
+@page "/"
+@using CalculatorTest.Client.Components.Dialogs
+
+<MudText Typo="Typo.h3" GutterBottom="true">Simple Calculator</MudText>
+<MudText Class="mb-8">Use the setting cog to change the look of the calculator.</MudText>
+<MudText Class="mb-8">Surface colour controls the background/number buttons colour (buttons are a darkened version of the background).</MudText>
+<MudText Class="mb-8">Primary controls the "=" button.</MudText>
+<MudText Class="mb-8">Secondary controls the "+" and "-" buttons.</MudText>
+<MudText Class="mb-8">Error controls the "C" button.</MudText>
+<MudText Class="mb-8">Border radius controls the rounding of the modal/buttons/display.</MudText>
+<MudButton Variant="Variant.Filled" OnClick="ShowCalculator" StartIcon="@Icons.Material.Filled.Calculate">Calculator</MudButton>
+
+@code{
+    private async Task ShowCalculator()
+    {
+        var parameters = new DialogParameters();
+        var options = new DialogOptions
+        {
+            CloseButton = true,
+            MaxWidth = MaxWidth.ExtraExtraLarge,
+            FullWidth = true,
+            DisableBackdropClick = true
+        };
+        var dialog = await DialogService.ShowAsync<CalculatorDialog>(
+            string.Empty,
+            parameters,
+            options);
+        await dialog.Result;
+    }
+}

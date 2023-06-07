@@ -1,0 +1,137 @@
+﻿<MudGrid Spacing="4" Justify="Justify.Center">
+    <MudItem xs="12">
+        <MudTextField @bind-Value="_display" Variant="Variant.Outlined" Disabled="true"/>
+    </MudItem>
+    <MudItem xs="9">
+        <MudGrid Spacing="2" Justify="Justify.Center">
+            <MudItem xs="4">
+                <MudButton Variant="Variant.Filled" FullWidth="true" OnClick="@(() => Input("7"))">7</MudButton>
+            </MudItem>
+            <MudItem xs="4">
+                <MudButton Variant="Variant.Filled" FullWidth="true" OnClick="@(() => Input("8"))">8</MudButton>
+            </MudItem>
+            <MudItem xs="4">
+                <MudButton Variant="Variant.Filled" FullWidth="true" OnClick="@(() => Input("9"))">9</MudButton>
+            </MudItem>
+            <MudItem xs="4">
+                <MudButton Variant="Variant.Filled" FullWidth="true" OnClick="@(() => Input("4"))">4</MudButton>
+            </MudItem>
+            <MudItem xs="4">
+                <MudButton Variant="Variant.Filled" FullWidth="true" OnClick="@(() => Input("5"))">5</MudButton>
+            </MudItem>
+            <MudItem xs="4">
+                <MudButton Variant="Variant.Filled" FullWidth="true" OnClick="@(() => Input("6"))">6</MudButton>
+            </MudItem>
+            <MudItem xs="4">
+                <MudButton Variant="Variant.Filled" FullWidth="true" OnClick="@(() => Input("1"))">1</MudButton>
+            </MudItem>
+            <MudItem xs="4">
+                <MudButton Variant="Variant.Filled" FullWidth="true" OnClick="@(() => Input("2"))">2</MudButton>
+            </MudItem>
+            <MudItem xs="4">
+                <MudButton Variant="Variant.Filled" FullWidth="true" OnClick="@(() => Input("3"))">3</MudButton>
+            </MudItem>
+            <MudItem xs="12">
+                <MudButton Variant="Variant.Filled" FullWidth="true" OnClick="@(() => Input("0"))">0</MudButton>
+            </MudItem>
+        </MudGrid>
+    </MudItem>
+    <MudItem xs="3">
+        <MudGrid Spacing="2" Justify="Justify.Center">
+            <MudItem xs="12">
+                <MudButton Color="Color.Error" Variant="Variant.Filled" FullWidth="true" OnClick="Clear">C</MudButton>
+            </MudItem>
+            <MudItem xs="12">
+                <MudButton Color="Color.Secondary" Variant="Variant.Filled" FullWidth="true" OnClick="Add">+</MudButton>
+            </MudItem>
+            <MudItem xs="12">
+                <MudButton Color="Color.Secondary" Variant="Variant.Filled" FullWidth="true" OnClick="Subtract">-</MudButton>
+            </MudItem>
+            <MudItem xs="12">
+                <MudButton Color="Color.Primary" Variant="Variant.Filled" FullWidth="true" OnClick="Sum">=</MudButton>
+            </MudItem>
+        </MudGrid>
+    </MudItem>
+</MudGrid>
+
+@code {
+    private string _display = string.Empty;
+    private string _left = string.Empty;
+    private string _right = string.Empty;
+    private Operator _operator = Operator.None;
+
+    private void Input(string value)
+    {
+        switch (_operator)
+        {
+            case Operator.None:
+                _left += value;
+                break;
+            case Operator.Plus:
+            case Operator.Minus:
+                _right += value;
+                break;
+            default:
+                throw new ArgumentOutOfRangeException();
+        }
+
+        _display = string.IsNullOrEmpty(_right) ? _left : _right;
+    }
+
+    private async Task Add()
+    {
+        await Calculate();
+        if (!string.IsNullOrEmpty(_left))
+            _operator = Operator.Plus;
+    }
+    
+    private async Task Subtract()
+    {
+        await Calculate();
+        if (!string.IsNullOrEmpty(_left))
+            _operator = Operator.Minus;
+    }
+    
+    private async Task Sum()
+    {
+        await Calculate();
+        _operator = Operator.None;
+    }
+    
+    private void Clear()
+    {
+        _operator = Operator.None;
+        _left = string.Empty;
+        _right = string.Empty;
+        _display = string.Empty;
+    }
+
+    private async Task Calculate()
+    {
+        if (string.IsNullOrEmpty(_left) || string.IsNullOrEmpty(_right)) return;
+        
+        switch (_operator)
+        {
+            case Operator.None:
+                return;
+            case Operator.Plus:
+                _display = (await CalculatorService.Add(new AddRequest(int.Parse(_left), int.Parse(_right)))).Value.ToString();
+                break;
+            case Operator.Minus:
+                _display = (await CalculatorService.Subtract(new SubtractRequest(int.Parse(_left), int.Parse(_right)))).Value.ToString();
+                break;
+            default:
+                throw new ArgumentOutOfRangeException();
+        }
+
+        _left = _display;
+        _right = string.Empty;
+    }
+
+    private enum Operator
+    {
+        None,
+        Plus,
+        Minus
+    }
+}

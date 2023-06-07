@@ -1,0 +1,21 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <TargetFramework>net7.0</TargetFramework>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <Nullable>enable</Nullable>
+        
+        <RootNamespace>CalculatorTest.Shared</RootNamespace>
+        <AssemblyName>CalculatorTest.Shared</AssemblyName>
+    </PropertyGroup>
+    
+    <ItemGroup>
+        <PackageReference Include="System.ServiceModel.Primitives" Version="6.0.0" />
+        <PackageReference Include="protobuf-net.BuildTools" Version="3.2.27">
+            <PrivateAssets>all</PrivateAssets>
+            <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+        </PackageReference>
+        <PackageReference Include="protobuf-net.Grpc" Version="1.1.1" />
+    </ItemGroup>
+
+</Project>

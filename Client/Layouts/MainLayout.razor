@@ -1,0 +1,20 @@
+﻿@inherits LayoutComponentBase
+
+<MudThemeProvider Theme="ThemeManager.Theme" />
+<MudDialogProvider/>
+
+<MudLayout>
+    <TopBar/>
+    <MudThemeManager @bind-Open="_themeManagerOpen"
+                     @bind-Theme="ThemeManager" />
+    <MudThemeManagerButton OnClick="@(() => _themeManagerOpen = true)" />
+    <MudMainContent>
+        <MudContainer MaxWidth="MaxWidth.Large" Class="pt-10">
+            @Body
+        </MudContainer>
+    </MudMainContent>
+</MudLayout>
+
+@code {
+    private bool _themeManagerOpen;
+}
